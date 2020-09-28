@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<style>
+html,
+body {
+  height: 100% !important;
+}
+
+.container {
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.rectangle {
+  display: block;
+  position: absolute;
+}
+
+</style>
+<body>
+
+<h3>Draw a rectangle with mouse</h3>
+<p>You can drag it, resize it and remove it with Escape-Button</p>
+
+<div id="container" class="container">
+</div>
+
+
+<script>
+
+	var rectangle;
+	var isMouseDown = false;
+	var rectangleWidth = 0;
+	var rectangleHeight = 0;
+
+	var posX = 0;
+	var posY = 0;
+	var posXMouse = 0;
+	var posYMouse = 0;
+
+	var cursorPosX = 0;
+	var	cursorPosY = 0;
+	var cursorPosStartX = 0;
+	var cursorPosStartY = 0;
+
+	// draw rectangle with mouse
+	container.addEventListener('mousedown', initRectangleDrawing, false);
+	container.addEventListener('mousemove', drawRectangle, false);
+	container.addEventListener('mouseup', initDraggingAndResizing, false);
+
+	function initRectangleDrawing(e) {
+		if( document.getElementById("rectangle") == null) {
+			posX = e.pageX;
+			posY = e.pageY;
+			var rectangleDiv = document.createElement('div');
+			rectangleDiv.className = 'rectangle';
+			rectangleDiv.id = 'rectangle';
+			rectangleDiv.style.left = posX + 'px';
+			rectangleDiv.style.top = posY + 'px';
+			container.appendChild(rectangleDiv);
+			rectangle = rectangleDiv;
+			isMouseDown = true;
+		}
+	}
+
+	function drawRectangle(e) {
+		if (isMouseDown == true) {
+			posXMouse = e.pageX;
+			posYMouse = e.pageY;
+
+			rectangle.width = Math.abs(posXMouse - posX) + 'px';
+			rectangle.height = Math.abs(posYMouse - posY)+ 'px';
+
+			rectangle.style.width = rectangle.width;
+			rectangle.style.height = rectangle.height;
+
+			rectangle.style.display = 'block';
+			rectangle.style.border = '1px dashed black';
+		}
+	}
+
+	function initDraggingAndResizing(e) {
+		isMouseDown = false;
+		initResizeable();
+		rectangle.style.cursor = 'move';
+		rectangle.addEventListener('mousedown', dragRectangle, false);
+	}
+
+	// drag created rectangle with mouse
+	function dragRectangle(e) {
+		cursorPosStartX = e.clientX;
+		cursorPosStartY = e.clientY;
+		document.addEventListener('mousemove', startDragging, false);
+		document.addEventListener('mouseup', stopDragging, false);
+	}
+
+	function startDragging(e) {
+		cursorPosX = cursorPosStartX - e.clientX;
+		cursorPosY = cursorPosStartY - e.clientY;
+		cursorPosStartX = e.clientX;
+		cursorPosStartY = e.clientY;
+
+		var selectedRectangle = document.getElementById("rectangle");
+		var resizerBottomMiddle = document.getElementById("resizerBottomMiddle");
+		var resizerTopMiddle = document.getElementById("resizerTopMiddle");
+		var resizerLeftMiddle = document.getElementById("resizerLeftMiddle");
+		var resizerRightMiddle = document.getElementById("resizerRightMiddle");
+
+		var midPosX = selectedRectangle.offsetWidth / 2;
+		var midPosY = selectedRectangle.offsetHeight / 2;
+
+		// drag resizer positions while dragging
+		resizerBottomMiddle.style.left =  midPosX + 'px';
+		resizerTopMiddle.style.left =  midPosX + 'px';
+		resizerLeftMiddle.style.top = midPosY + 'px';
+		resizerRightMiddle.style.top = midPosY + 'px';
+
+		selectedRectangle.style.top = (selectedRectangle.offsetTop - cursorPosY) + "px";
+		selectedRectangle.style.left = (selectedRectangle.offsetLeft - cursorPosX) + "px";
+	}
+
+	function stopDragging() {
+		document.removeEventListener('mousemove', startDragging, false);
+		document.removeEventListener('mouseup', stopDragging, false);
+	}
+
+
+	// resize created rectangle
+	function initResizeable() {
+		rectangle = document.getElementById('rectangle');
+
+		// remove all child nodes(resizers) with new resizing
+		rectangle.innerHTML = "";
+
+		var resizerInfoBottomRight = {id: 'resizerBottomRight', top:'', left:'', right:'-4px', bottom:'-4px', cursor:'se-resize'};
+		assignResizerStyles(resizerInfoBottomRight, startResizeFromBottomRight);
+
+		var resizerInfoTopRight = {id: 'resizerTopRight',top:'-4px', left:'', right:'-4px', bottom:'', cursor:'nesw-resize'};
+		assignResizerStyles(resizerInfoTopRight, startResizeFromTopRight);
+
+		var resizerInfoTopLeft = {id: 'resizerTopLeft', top:'-4px', left:'-4px', right:'', bottom:'', cursor:'nwse-resize'};
+		assignResizerStyles(resizerInfoTopLeft, startResizeFromTopLeft);
+
+		var resizerInfoBottomLeft = {id: 'resizerBottomLeft', top:'', left:'-4px', right:'', bottom:'-4px', cursor:'nesw-resize'};
+		assignResizerStyles(resizerInfoBottomLeft, startResizeFromBottomLeft);
+
+		var middlePosX = rectangle.offsetWidth/2;
+		var middlePosY = rectangle.offsetHeight/2;
+
+		var resizerInfoBottomMiddle = {id: 'resizerBottomMiddle', top:'', left: middlePosX + 'px', right:'', bottom:'-4px', cursor:'s-resize'};
+		assignResizerStyles(resizerInfoBottomMiddle, startResizeFromBottomMiddle);
+
+		var resizerInfoTopMiddle = {id: 'resizerTopMiddle', top:'-4px', left: middlePosX + 'px', right:'', bottom:'', cursor:'s-resize'};
+		assignResizerStyles(resizerInfoTopMiddle, startResizeFromTopMiddle);
+
+		var resizerInfoRightMiddle = {id: 'resizerRightMiddle', top: middlePosY + 'px', left:'', right: '-4px', bottom:'', cursor:'w-resize'};
+		assignResizerStyles(resizerInfoRightMiddle, startResizeFromRightMiddle);
+
+		var resizerInfoLeftMiddle = {id: 'resizerLeftMiddle', top: middlePosY + 'px', left: '-4px', right:'', bottom:'', cursor:'w-resize'};
+		assignResizerStyles(resizerInfoLeftMiddle, startResizeFromLeftMiddle);
+	}
+
+	function assignResizerStyles(resizerInfo, resizeMethod){
+		var resizer = document.createElement('div');
+		resizer.id = resizerInfo.id;
+		resizer.style.width = '8px';
+		resizer.style.height = '8px';
+		resizer.style.background = 'black';
+		resizer.style.position = 'absolute';
+		resizer.style.top = resizerInfo.top;
+		resizer.style.left = resizerInfo.left;
+		resizer.style.right = resizerInfo.right;
+		resizer.style.bottom = resizerInfo.bottom;
+		resizer.style.cursor = resizerInfo.cursor;
+		rectangle.appendChild(resizer);
+		resizer.addEventListener('mousedown', resizeMethod, false);
+	}
+
+	function getCurrentRectanglePositions(e) {
+		rectangleWidth = rectangle.offsetWidth;
+		rectangleHeight = rectangle.offsetHeight;
+		posX = rectangle.offsetLeft;
+		posY = rectangle.offsetTop;
+		posXMouse = e.clientX;
+		posYMouse = e.clientY;
+	}
+
+	// resize process from top left
+	function startResizeFromTopLeft(e) {
+		getCurrentRectanglePositions(e);
+
+		window.addEventListener('mousemove', resizeFromTopLeft, false);
+		window.addEventListener('mouseup', stopResizeFromTopLeft, false);
+	}
+
+	function resizeFromTopLeft(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.width = rectangleWidth - rectangle.offsetRight + 'px';
+		rectangle.style.left = posX + rectangle.offsetRight + 'px';
+
+		rectangle.style.height = rectangleHeight - rectangle.offsetBottom + 'px';
+		rectangle.style.top = posY + rectangle.offsetBottom + 'px';
+	}
+
+	function stopResizeFromTopLeft(e) {
+		window.removeEventListener('mousemove', resizeFromTopLeft, false);
+		window.removeEventListener('mouseup', stopResizeFromTopLeft, false);
+	}
+
+	// resize process from top right
+	function startResizeFromTopRight(e) {
+		getCurrentRectanglePositions(e);
+		window.addEventListener('mousemove', resizeFromTopRight, false);
+		window.addEventListener('mouseup', stopResizeFromTopRight, false);
+	}
+
+	function resizeFromTopRight(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.width = rectangleWidth + rectangle.offsetRight + 'px';
+		rectangle.style.left = posX + 'px';
+		rectangle.style.height = rectangleHeight - rectangle.offsetBottom + 'px';
+		rectangle.style.top = posY + rectangle.offsetBottom + 'px';
+	}
+
+	function stopResizeFromTopRight(e) {
+		window.removeEventListener('mousemove', resizeFromTopRight, false);
+		window.removeEventListener('mouseup', stopResizeFromTopRight, false);
+	}
+
+	// resize process from bottom left
+	function startResizeFromBottomLeft(e) {
+		getCurrentRectanglePositions(e);
+		window.addEventListener('mousemove', resizeFromBottomLeft, false);
+		window.addEventListener('mouseup', stopResizeFromBottomLeft, false);
+	}
+
+	function resizeFromBottomLeft(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.width = rectangleWidth - rectangle.offsetRight + 'px';
+		rectangle.style.left = posX + rectangle.offsetRight + 'px';
+
+		rectangle.style.top = posY + 'px';
+		rectangle.style.height = (e.clientY - rectangle.offsetTop) + 'px';
+	}
+
+	function stopResizeFromBottomLeft(e) {
+		window.removeEventListener('mousemove', resizeFromBottomLeft, false);
+		window.removeEventListener('mouseup', stopResizeFromBottomLeft, false);
+	}
+
+	// resize process from bottom right
+	function startResizeFromBottomRight(e) {
+		getCurrentRectanglePositions(e);
+		window.addEventListener('mousemove', resizeFromBottomRight, false);
+		window.addEventListener('mouseup', stopResizeFromBottomRight, false);
+	}
+
+	function resizeFromBottomRight(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.width = rectangleWidth + rectangle.offsetRight + 'px';
+		rectangle.style.top = posY + 'px';
+		rectangle.style.height = (e.clientY - rectangle.offsetTop) + 'px';
+		rectangle.style.left = posX + 'px';
+	}
+
+	function stopResizeFromBottomRight(e) {
+		window.removeEventListener('mousemove', resizeFromBottomRight, false);
+		window.removeEventListener('mouseup', stopResizeFromBottomRight, false);
+	}
+
+
+	function startResizeFromTopMiddle(e) {
+		getCurrentRectanglePositions(e);
+
+		window.addEventListener('mousemove', resizeFromTopMiddle, false);
+		window.addEventListener('mouseup', stopResizeFromTopMiddle, false);
+	}
+
+	function resizeFromTopMiddle(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.left = posX + 'px';
+
+		rectangle.style.height = rectangleHeight - rectangle.offsetBottom + 'px';
+		rectangle.style.top = posY + rectangle.offsetBottom + 'px';
+	}
+
+	function stopResizeFromTopMiddle(e) {
+		window.removeEventListener('mousemove', resizeFromTopMiddle, false);
+		window.removeEventListener('mouseup', stopResizeFromTopMiddle, false);
+	}
+
+
+	function startResizeFromBottomMiddle(e) {
+		getCurrentRectanglePositions(e);
+
+		window.addEventListener('mousemove', resizeFromBottomMiddle, false);
+		window.addEventListener('mouseup', stopResizeFromBottomMiddle, false);
+	}
+
+	function resizeFromBottomMiddle(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.left = posX + 'px';
+
+		rectangle.style.top = posY + 'px';
+		rectangle.style.height = (e.clientY - rectangle.offsetTop) + 'px';
+	}
+
+	function stopResizeFromBottomMiddle(e) {
+		window.removeEventListener('mousemove', resizeFromBottomMiddle, false);
+		window.removeEventListener('mouseup', stopResizeFromBottomMiddle, false);
+	}
+
+
+	function startResizeFromRightMiddle(e) {
+		getCurrentRectanglePositions(e);
+
+		window.addEventListener('mousemove', resizeFromRightMiddle, false);
+		window.addEventListener('mouseup', stopResizeFromRightMiddle, false);
+	}
+
+	function resizeFromRightMiddle(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.width = rectangleWidth + rectangle.offsetRight + 'px';
+		rectangle.style.top = posY + 'px';
+		rectangle.style.left = posX + 'px';
+	}
+
+	function stopResizeFromRightMiddle(e) {
+		window.removeEventListener('mousemove', resizeFromRightMiddle, false);
+		window.removeEventListener('mouseup', stopResizeFromRightMiddle, false);
+	}
+
+
+	function startResizeFromLeftMiddle(e) {
+		getCurrentRectanglePositions(e);
+
+		window.addEventListener('mousemove', resizeFromLeftMiddle, false);
+		window.addEventListener('mouseup', stopResizeFromLeftMiddle, false);
+	}
+
+	function resizeFromLeftMiddle(e) {
+		rectangle.offsetBottom = e.clientY - posYMouse;
+		rectangle.offsetRight = e.clientX - posXMouse;
+
+		rectangle.style.width = rectangleWidth - rectangle.offsetRight + 'px';
+		rectangle.style.left = posX + rectangle.offsetRight + 'px';
+		rectangle.style.top = posY + 'px';
+	}
+
+	function stopResizeFromLeftMiddle(e) {
+		window.removeEventListener('mousemove', resizeFromLeftMiddle, false);
+		window.removeEventListener('mouseup', stopResizeFromLeftMiddle, false);
+	}
+
+	// remove rectangle by esc button
+	document.onkeydown = function(evt) {
+		evt = evt || window.event;
+		if (evt.keyCode == 27) {
+			document.getElementById("rectangle").remove();
+		}
+	};
+
+
+</script>
+
+</body>
+</html>
