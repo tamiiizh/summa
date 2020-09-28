@@ -1,0 +1,35 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  padding: 3rem;
+}
+.container {
+  border: 1px solid #000;
+  width: fit-content;
+}
+
+.main-box {
+  width: 50rem;
+  height: 50rem;
+  position: relative;
+}
+
+.sub-box {
+  width: 25%;
+  height: 25%;
+  background-color: #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.5s;
+}
