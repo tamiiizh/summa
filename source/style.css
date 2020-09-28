@@ -1,0 +1,186 @@
+#mainContainer {
+    position: relative;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    width: 70%;
+    height: 0;
+    padding-bottom: 100%;
+    background-color: dimgray;
+    border-radius: 3%;
+    filter: drop-shadow(1.5vw 1.5vw 1vw rgb(58, 58, 58));
+    font-size: 6vw;
+    font-family: sans-serif;
+}
+
+#calculatorContainer {
+    position: absolute;
+    margin: 5% 0% 0% 4%;
+    height: 90%;
+    width:90%;
+    background-color: gray;
+    border-radius: 3%;
+    border: 2px solid black;
+}
+
+#displayContainer {
+    position: relative;
+    margin: 2% auto;
+    top: 2%;
+    height: 10%;
+    width: 90%;
+    border-radius: 3%;
+    background-color: khaki;
+}
+
+#displayContent {
+    padding: 1%;
+    margin-right: 5%;
+    text-align: right;
+}
+
+#clearButton {
+    background-color: sienna;
+}
+
+#clearButton:hover {
+    background-color: red;
+}
+
+#clearButton:active {
+    background-color: silver;
+}
+
+#numberButtons {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-rows: 20% 20% 20% 20% 20%;
+    padding: 5%;
+    margin-left: 4%;
+    margin-top: 2%;
+    width: 80%;
+    height: 70%;
+}
+
+#divide {
+    grid-column: 4/4;
+    grid-row: 5/5;
+}
+
+#equals {
+    grid-column: 4/3;
+    grid-row: 5/5;
+}
+
+.button {
+    position: relative;
+    margin: 10%;
+    width: 80%;
+    height: 95%;
+    border-radius: 20%;
+    font-size: 4vw;
+    border: 2px solid dimgray;
+    background-color: honeydew;
+    filter: drop-shadow(0.5vw 0.5vw 0.25vw black);
+}
+
+.button:hover {
+    position: relative;
+    margin: 10%;
+    width: 80%;
+    height: 95%;
+    border-radius: 20%;
+    font-size: 4vw;
+    border: 2px solid dimgray;
+    background-color: goldenrod;
+}
+
+.button:active {
+    position: relative;
+    margin: 10%;
+    width: 80%;
+    height: 95%;
+    border-radius: 20%;
+    font-size: 4vw;
+    border: 2px solid dimgray;
+    background-color: seagreen;
+}
+
+.operation {
+    position: relative;
+    margin: 10%;
+    width: 80%;
+    height: 95%;
+    border-radius: 20%;
+    font-size: 4vw;
+    border: 2px solid dimgray;
+    background-color: rgb(117, 194, 150);
+    filter: drop-shadow(0.5vw 0.5vw 0.25vw black);
+}
+
+.operation:hover {
+    position: relative;
+    margin: 10%;
+    width: 80%;
+    height: 95%;
+    border-radius: 20%;
+    font-size: 4vw;
+    border: 2px solid dimgray;
+    background-color: goldenrod;
+}
+
+.operation:active {
+    position: relative;
+    margin: 10%;
+    width: 80%;
+    height: 95%;
+    border-radius: 20%;
+    font-size: 4vw;
+    border: 2px solid dimgray;
+    background-color: honeydew;
+}
+
+@media (min-width: 700px) {
+    #mainContainer {
+        position: relative;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        width: 50%;
+        height: 0;
+        padding-bottom: 50%;
+        background-color: dimgray;
+        border-radius: 3%;
+        filter: drop-shadow(1.5vw 1.5vw 1vw rgb(58, 58, 58));
+        font-size: 3vw;
+        font-family: sans-serif;
+    }
+
+    .button {
+        font-size: 2vw;
+    }
+    
+    .button:hover {
+        font-size: 2vw;
+    }
+    
+    .button:active {
+        font-size: 2vw;
+    }
+    
+    .operation {
+        font-size: 2vw;
+    }
+    
+    .operation:hover {
+        font-size: 2vw;
+    }
+    
+    .operation:active {
+        font-size: 2vw;
+    }
+}
